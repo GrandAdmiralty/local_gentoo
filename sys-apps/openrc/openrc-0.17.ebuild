@@ -6,7 +6,6 @@ EAPI=7
 inherit eutils  flag-o-matic multilib pam toolchain-funcs usr-ldscript
 
 
-
 DESCRIPTION="OpenRC manages the services, startup and shutdown of a host"
 HOMEPAGE="https://www.gentoo.org/proj/en/base/openrc/"
 
@@ -14,8 +13,8 @@ if [[ ${PV} == "9999" ]]; then
 	EGIT_REPO_URI="git://github.com/OpenRC/${PN}.git"
 	inherit git-r3
 else
-	SRC_URI="ftp://192.168.1.7/${P}.tar.bz2"
-	KEYWORDS="~alpha amd64 arm ~arm64 hppa ~ia64 ~m68k ~mips ppc ppc64 ~s390 sparc x86"
+	SRC_URI="https://github.com/OpenRC/openrc/tarball/0c2e4eb -> ${PN}-0.17.tar.gz"
+KEYWORDS="~alpha amd64 arm ~arm64 hppa ~ia64 ~m68k ~mips ppc ppc64 ~s390 sparc x86"
 fi
 
 LICENSE="BSD-2"
@@ -56,6 +55,10 @@ PATCHES=(
 	"${FILESDIR}/${PN}-0.17-gcc10fix.patch"
 )
 
+src_unpack() {
+	unpack ${A}
+	mv  "${WORKDIR}/OpenRC-openrc-0c2e4eb" "${S}" || die 
+}
 
 src_prepare() {
 	sed -i 's:0444:0644:' mk/sys.mk || die
@@ -65,7 +68,7 @@ src_prepare() {
 	sed -i "/^GITVER[[:space:]]*=/s:=.*:=${ver}:" mk/gitver.mk || die
 	fi
 
-#	eapply "{FILESDIR}/openrc-0.17-gcc10fix.patch"
+
 
 	# Allow user patches to be applied without modifying the ebuild
 	default
